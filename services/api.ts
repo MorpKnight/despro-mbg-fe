@@ -111,9 +111,6 @@ async function makeRequest(
   }
   if (token && !("Authorization" in finalHeaders)) {
     finalHeaders.Authorization = `Bearer ${token}`;
-    console.log("[api] attached token:", token.slice(0, 10) + "...");
-  } else {
-    console.warn("[api] no token attached or already present");
   }
 
   // Inject Central API Key for Edge Mode if configured
@@ -157,7 +154,7 @@ function buildLocalBaseUrl(localIp: string | null): string | null {
   }
 
   if (!isLocalIdentifier) {
-    // It's a domain without scheme (e.g. mbg-be.mrt.qzz.io)
+    // It's a domain without scheme (e.g. api.example.com)
     // defaulting to HTTPS and NO default port
     return `https://${withoutSuffix}/api/v1`;
   }

@@ -11,9 +11,6 @@ import { api } from "../../services/api";
 export const SignupForm = () => {
     const router = useRouter();
     const roleOptions = [
-        { label: "Admin Sekolah", value: "admin_sekolah" },
-        { label: "Admin Catering", value: "admin_catering" },
-        { label: "Admin Dinkes", value: "admin_dinkes" },
         { label: "Siswa", value: "siswa" },
     ];
 
@@ -25,11 +22,7 @@ export const SignupForm = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [schools, setSchools] = useState([]);
-    const [caterings, setCaterings] = useState([]);
-    const [healthOffices, setHealthOffices] = useState([]);
     const [schoolId, setSchoolId] = useState("");
-    const [cateringId, setCateringId] = useState("");
-    const [healthOfficeAreaId, setHealthOfficeAreaId] = useState("");
     const [error, setError] = useState<string | null>(null);
 
     const onRoleSelect = async (selectedRole: string) => {
@@ -44,23 +37,6 @@ export const SignupForm = () => {
                 setSchoolId("");
             }
 
-            if (selectedRole === "admin_catering") {
-                const res = await api("public/catering");
-                setCaterings(res);
-                setCateringId("");
-            } else {
-                setCaterings([]);
-                setCateringId("");
-            }
-
-            if (selectedRole === "admin_dinkes") {
-                const res = await api("public/health-offices");
-                setHealthOffices(res);
-                setHealthOfficeAreaId("");
-            } else {
-                setHealthOffices([]);
-                setHealthOfficeAreaId("");
-            }
         } catch (err) {
             console.error("Failed to fetch data:", err);
         }
@@ -79,7 +55,7 @@ export const SignupForm = () => {
             setError("Password minimal 8 karakter.");
             return;
         }
-        if (!role) {
+        if (!role || role === "Select a Role") {
             setError("Mohon pilih role.");
             return;
         }
@@ -97,9 +73,6 @@ export const SignupForm = () => {
                     school_id: ["admin_sekolah", "siswa"].includes(role)
                         ? schoolId
                         : undefined,
-                    catering_id: role === "admin_catering" ? cateringId : undefined,
-                    health_office_area_id:
-                        role === "admin_dinkes" ? healthOfficeAreaId : undefined,
                 }),
             });
             if (!res || res === undefined) {
@@ -174,29 +147,6 @@ export const SignupForm = () => {
                     />
                 )}
 
-                {role === "admin_catering" && (
-                    <Dropdown
-                        label="Catering"
-                        options={caterings.map((c: any) => ({
-                            label: c.name,
-                            value: c.id,
-                        }))}
-                        value={cateringId}
-                        onValueChange={setCateringId}
-                    />
-                )}
-
-                {role === "admin_dinkes" && (
-                    <Dropdown
-                        label="Health Office"
-                        options={healthOffices.map((h: any) => ({
-                            label: h.name,
-                            value: h.id,
-                        }))}
-                        value={healthOfficeAreaId}
-                        onValueChange={setHealthOfficeAreaId}
-                    />
-                )}
 
                 {/* PASSWORD */}
                 <View>

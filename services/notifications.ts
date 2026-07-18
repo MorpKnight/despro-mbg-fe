@@ -53,7 +53,6 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
 
     try {
       token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-      console.log("Expo Push Token:", token);
     } catch (e) {
       console.error(e);
     }
@@ -62,25 +61,4 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
   }
 
   return token;
-}
-
-// Fungsi helper untuk mengirim notifikasi test (bisa dihapus nanti jika sudah production)
-export async function sendTestPushNotification(expoPushToken: string) {
-  const message = {
-    to: expoPushToken,
-    sound: "default",
-    title: "Test Notification",
-    body: "Ini adalah pesan percobaan dari aplikasi!",
-    data: { someData: "goes here" },
-  };
-
-  await fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(message),
-  });
 }

@@ -32,6 +32,7 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 *.log
+lint_output.txt
 
 # Certificates & Keys
 *.jks
@@ -39,6 +40,9 @@ yarn-error.*
 *.p12
 *.key
 *.mobileprovision
+*.pem
+credentials*.json
+electron-dist/
 *.orig.*
 web-build/
 .env

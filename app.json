@@ -64,36 +64,9 @@
       "reactCompiler": false
     },
     "extra": {
-      "apiUrl": "https://mbg-be.mrt.qzz.io/api/v1",
+      "apiUrl": "http://127.0.0.1:8000/api/v1",
       "MODE": "pusat",
       "auth": {
-        "users": [
-          {
-            "username": "superadmin",
-            "password": "password",
-            "role": "super_admin"
-          },
-          {
-            "username": "admin_sekolah_test",
-            "password": "password",
-            "role": "admin_sekolah"
-          },
-          {
-            "username": "admin_catering_test",
-            "password": "password",
-            "role": "admin_catering"
-          },
-          {
-            "username": "admin_dinkes_test",
-            "password": "password",
-            "role": "admin_dinkes"
-          },
-          {
-            "username": "siswa_test",
-            "password": "password",
-            "role": "siswa"
-          }
-        ],
         "sessionKey": "mbg_auth_session"
       },
       "router": {},

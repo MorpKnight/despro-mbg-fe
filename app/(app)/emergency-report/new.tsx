@@ -11,9 +11,6 @@ import TextInput from "../../../components/ui/TextInput";
 import { useOffline } from "../../../hooks/useOffline";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { api } from "../../../services/api";
-import { useEffect } from "react";
-import { fetchMyProfile } from "@/services/profile";
-import Dropdown from "@/components/ui/Dropdown";
 
 const EmergencyReportSchema = z.object({
     title: z.string().min(5, "Judul laporan minimal 5 karakter"),
@@ -30,8 +27,6 @@ export default function CreateEmergencyReport() {
     const { isOnline } = useOffline();
     const { showSnackbar } = useSnackbar();
     const [submitting, setSubmitting] = useState(false);
-    const [cateringOptions, setCateringOptions] = useState([]);
-    const [selectedCateringId, setSelectedCateringId] = useState("");
 
     const {
         control,
@@ -54,54 +49,6 @@ export default function CreateEmergencyReport() {
         setSubmitting(true);
 
         try {
-            // ---------------------------------------------------
-            // 1️⃣ Fetch students from selected catering
-            // ---------------------------------------------------
-            const students = await api(`caterings/${selectedCateringId}/students`);
-
-            // Extract push tokens, skip null / empty
-            const studentTokens = students
-                .map((s) => s.push_token)
-                .filter((t) => t && t.trim() !== "");
-
-            console.log("Valid student push tokens:", studentTokens);
-
-            // ---------------------------------------------------
-            // 2️⃣ Send push notification to each student
-            // ---------------------------------------------------
-            const sendTasks = studentTokens.map(async (token) => {
-                try {
-                    console.log("Sending token to  ExponentPushToken[rr9PXiElnrn3wda4bWClOm]:");
-                    const message = {
-                        to: 'ExponentPushToken[rr9PXiElnrn3wda4bWClOm]',
-                        sound: "default",
-                        title: values.title,
-                        body: values.description || "",
-                        data: { report_title: values.title },
-                    };
-
-                    await fetch("https://exp.host/--/api/v2/push/send", {
-                        method: "POST",
-                        headers: {
-                            Accept: "application/json",
-                            "Accept-encoding": "gzip, deflate",
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(message),
-                    });
-
-                    console.log(`Push sent → ${token}`);
-                } catch (err) {
-                    console.error(`Failed to send push → ${token}`, err);
-                }
-            });
-
-            // await all push calls (no crash even if some fail)
-            await Promise.allSettled(sendTasks);
-
-            // ---------------------------------------------------
-            // 3️⃣ Submit emergency report
-            // ---------------------------------------------------
             await api("emergency/reports", {
                 method: "POST",
                 headers: {
@@ -142,41 +89,6 @@ export default function CreateEmergencyReport() {
         }
     });
 
-    useEffect(() => {
-        async function load() {
-            try {
-                const profile = await fetchMyProfile();
-                console.log("Loaded profile:", profile);
-                console.log("School ID:", profile.schoolId);
-            } catch (e) {
-                console.log("Failed to load profile", e);
-            }
-        }
-
-        load(); // run it
-    }, []);
-
-    useEffect(() => {
-        async function loadCaterings() {
-            try {
-                const response = await api("associations/dropdown/caterings");
-
-                // Convert response → dropdown format
-                const formatted = response.map((c) => ({
-                    label: c.name,
-                    value: c.id,
-                }));
-
-                setCateringOptions(formatted);
-
-                console.log("Caterings loaded:", formatted);
-            } catch (err) {
-                console.log("Failed to load caterings", err);
-            }
-        }
-
-        loadCaterings();
-    }, []);
     return (
         <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
             <Card>
@@ -197,24 +109,6 @@ export default function CreateEmergencyReport() {
 
             <Card>
                 <View className="gap-4">
-                    <Text className="mb-1 text-gray-800 font-medium">
-                        Sumber Catering <Text className="text-red-500">*</Text>
-                    </Text>
-
-                    <View className="px-6 mt-4 mb-4 z-10">
-                        <Text className="mb-2 text-sm font-medium text-gray-700">Pilih Katering</Text>
-
-                        <Dropdown
-                            placeholder="Pilih Katering..."
-                            options={cateringOptions}
-                            value={selectedCateringId}
-                            onValueChange={(value) => {
-                                console.log("Selected catering ID:", value);
-                                setSelectedCateringId(value);
-                            }}
-                        />
-                    </View>
-
                     <View>
                         <Text className="mb-1 text-gray-800 font-medium">
                             Judul Laporan <Text className="text-red-500">*</Text>

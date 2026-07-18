@@ -43,7 +43,7 @@ const nestedApiUrl = typeof extraConfig?.api?.baseUrl === 'string' ? extraConfig
 const rawDefaultBaseUrl = process.env.EXPO_PUBLIC_API_URL
   || extraApiUrl
   || nestedApiUrl
-  || 'https://mbg-be.mrt.qzz.io/api/v1';
+  || 'http://127.0.0.1:8000/api/v1';
 
 const ALLOW_LOCALHOST_ON_WEB = process.env.EXPO_PUBLIC_ALLOW_LOCALHOST === 'true';
 
