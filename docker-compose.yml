@@ -8,15 +8,14 @@ services:
       dockerfile: Dockerfile
       args:
         # API URL tanpa /docs
-        - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL:-https://mbg-be.mrt.qzz.io/api/v1}
+        - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL:-http://127.0.0.1:8000/api/v1}
         - EXPO_PUBLIC_CDN_URL=${EXPO_PUBLIC_CDN_URL}
-        - EXPO_PUBLIC_CDN_AUTH_TOKEN=${EXPO_PUBLIC_CDN_AUTH_TOKEN}
         - EXPO_PUBLIC_WEBPUSH_VAPID_KEY=${EXPO_PUBLIC_WEBPUSH_VAPID_KEY}
     # Uncomment untuk akses langsung tanpa cloudflared
     # ports:
     #   - "8080:8080"
     environment:
-      - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL:-https://mbg-be.mrt.qzz.io/api/v1}
+      - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL:-http://127.0.0.1:8000/api/v1}
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
       interval: 30s

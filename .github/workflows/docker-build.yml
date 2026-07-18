@@ -47,10 +47,11 @@ jobs:
                       type=ref,event=pr
                       type=semver,pattern={{version}}
                       type=semver,pattern={{major}}.{{minor}}
-                      type=sha,prefix={{branch}}-
+                      type=sha,prefix=sha-
                       type=raw,value=latest,enable={{is_default_branch}}
 
             - name: Build and push Docker image
+              id: build
               uses: docker/build-push-action@v5
               with:
                   context: .
@@ -58,9 +59,8 @@ jobs:
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
                   build-args: |
-                      EXPO_PUBLIC_API_URL=${{ secrets.EXPO_PUBLIC_API_URL || 'https://mbg-be.mrt.qzz.io/api/v1' }}
+                      EXPO_PUBLIC_API_URL=${{ secrets.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1' }}
                       EXPO_PUBLIC_CDN_URL=${{ secrets.EXPO_PUBLIC_CDN_URL }}
-                      EXPO_PUBLIC_CDN_AUTH_TOKEN=${{ secrets.EXPO_PUBLIC_CDN_AUTH_TOKEN }}
                       EXPO_PUBLIC_WEBPUSH_VAPID_KEY=${{ secrets.EXPO_PUBLIC_WEBPUSH_VAPID_KEY }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max

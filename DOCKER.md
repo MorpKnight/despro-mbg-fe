@@ -10,7 +10,6 @@ docker build -t despro-frontend .
 docker build \
   --build-arg EXPO_PUBLIC_API_URL=https://your-api.com/api/v1 \
   --build-arg EXPO_PUBLIC_CDN_URL=https://your-cdn.com \
-  --build-arg EXPO_PUBLIC_CDN_AUTH_TOKEN=your-token \
   --build-arg EXPO_PUBLIC_WEBPUSH_VAPID_KEY=your-key \
   -t despro-frontend .
 ```
@@ -66,11 +65,12 @@ docker run -d -p 8080:8080 ghcr.io/morpknight/despro-mbg:latest
 Set di `.env` atau docker-compose.yml:
 
 ```env
-EXPO_PUBLIC_API_URL=https://mbg-be.mrt.qzz.io/api/v1
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8000/api/v1
 EXPO_PUBLIC_CDN_URL=https://your-cdn.com
-EXPO_PUBLIC_CDN_AUTH_TOKEN=your-token
 EXPO_PUBLIC_WEBPUSH_VAPID_KEY=your-vapid-key
 ```
+
+Do not pass a private CDN credential to the frontend build. Frontend bundles are distributed to users; private upload authorization should be implemented through the backend.
 
 ## Troubleshooting
 

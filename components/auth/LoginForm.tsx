@@ -37,39 +37,22 @@ export const LoginForm = ({ onShowSettings }: LoginFormProps) => {
             }
             await signIn(username.trim(), password, loginType === 'student' ? 'auth/login/student' : 'auth/login');
             if (Platform.OS === "ios" || Platform.OS === "android") {
-                    try {
-                      const expoPushToken =
-                        await registerForPushNotificationsAsync();
-                      if (expoPushToken) {
+                try {
+                    const expoPushToken = await registerForPushNotificationsAsync();
+                    if (expoPushToken) {
                         await api("profile/push-token", {
-                          method: "PATCH",
-                          body: JSON.stringify({
-                            token: expoPushToken,
-                          }),
+                            method: "PATCH",
+                            body: JSON.stringify({ token: expoPushToken }),
                         });
-                        console.log("Push token registered:", expoPushToken);
-                      } else {
-                        console.log("No expo push token available. Skipping.");
-                      }
-                    } catch (err) {
-                      console.log("Failed to register token:", err);
                     }
-                  } else {
-                    console.log("Skipping push token registration on web/PC");
-                  }
+                } catch (err) {
+                    console.warn("Failed to register push notifications");
+                }
+            }
         } catch (e: any) {
             setError(e?.message || "Gagal masuk");
         }
     };
-
-    // Demo accounts for quick testing
-    const demoAccounts = [
-        { label: 'Super Admin', u: 'superadmin', p: 'password' },
-        { label: 'Sekolah', u: 'admin_sekolah_test', p: 'password' },
-        { label: 'Catering', u: 'admin_catering_test', p: 'password' },
-        { label: 'Dinkes', u: 'admin_dinkes_test', p: 'password' },
-        { label: 'Siswa', u: 'siswa_test', p: 'password' },
-    ];
 
     return (
         
@@ -167,26 +150,6 @@ export const LoginForm = ({ onShowSettings }: LoginFormProps) => {
                     onPress={handleLogin}
                     disabled={loading}
                 />
-            </View>
-
-            <View className="mt-10 pt-8 border-t-2 border-gray-100">
-                <Text className="text-gray-400 text-xs text-center mb-5 uppercase tracking-widest font-bold">
-                    Akun Demo
-                </Text>
-                <View className="flex-row flex-wrap justify-center gap-2.5">
-                    {demoAccounts.map((demo) => (
-                        <TouchableOpacity
-                            key={demo.label}
-                            onPress={() => {
-                                setUsername(demo.u);
-                                setPassword(demo.p);
-                            }}
-                            className="px-4 py-2.5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 hover:border-blue-300 hover:shadow-md transition-all active:scale-95"
-                        >
-                            <Text className="text-xs font-bold text-gray-700">{demo.label}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
             </View>
 
             <View className="items-center mt-10">
